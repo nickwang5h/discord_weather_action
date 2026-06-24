@@ -2,15 +2,19 @@ import os
 import requests
 
 def get_weather(city="Ottawa"):
-    # 使用 wttr.in 的 format=4 可以返回一行极其简洁的天气概览
-    # 例如: "Ottawa: ⛅️  +22°C ↙11km/h"
-    url = f"https://wttr.in/{city}?format=4"
+    # 使用自定义 format 获取包含降水量(%p)等更多信息的天气
+    # %l: 城市名, %c: 天气emoji, %t: 温度, %p: 降水量(mm), %w: 风速和方向, %h: 湿度
+    url = f"https://wttr.in/{city}"
+    params = {
+        "format": "%l: %c %t 💧%p 💨%w 💦%h",
+        "m": ""
+    }
     try:
-        response = requests.get(url, timeout=10)
+        response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
-        return response.text
+        return response.text.strip()
     except Exception as e:
-        return f"获取天气失败: {e}"
+        return f"获取 {city} 天气失败: {e}"
 
 def push_to_discord(weather_text):
     # 从环境变量中读取 Webhook URL，保证安全
@@ -30,5 +34,6 @@ def push_to_discord(weather_text):
         print(f"推送失败，状态码: {response.status_code}")
 
 if __name__ == "__main__":
-    weather = get_weather()
-    push_to_discord(weather)
+    weather_ottawa = get_weather("Ottawa")
+    weather_sudbury = get_weather("Sudbury")
+    push_to_discord(f"{weather_ottawa}\n> {weather_sudbury}")
