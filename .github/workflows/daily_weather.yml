@@ -1,0 +1,31 @@
+name: Daily Weather Push to Discord
+
+on:
+  schedule:
+    # 这里的 cron 使用的是 UTC 时间。
+    # UTC 12:00 大约等于加东时间 (EDT) 早上 08:00。
+    - cron: '0 12 * * *'
+  workflow_dispatch: # 加上这一行，允许你在 GitHub 页面手动点击运行，方便测试
+
+jobs:
+  run-weather-bot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        # 因为代码只用到了 requests，所以直接 pip install 即可
+        run: pip install requests
+
+      - name: Run Python Script
+        # 将 GitHub Secrets 注入为环境变量
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: python main.py
