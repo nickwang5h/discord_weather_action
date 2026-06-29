@@ -25,7 +25,9 @@ jobs:
         run: pip install requests
 
       - name: Run Python Script
-        # 将 GitHub Secrets 注入为环境变量
+        # 将 GitHub Secrets 和 配置信息注入为环境变量
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          # 在这里配置你的城市，用逗号分隔 (支持任意多个城市)
+          CITIES: "Ottawa,Sudbury"
         run: python main.py
