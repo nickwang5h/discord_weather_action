@@ -3,8 +3,8 @@ name: Daily Weather Push to Discord
 on:
   schedule:
     # 这里的 cron 使用的是 UTC 时间。
-    # UTC 12:00 大约等于加东时间 (EDT) 早上 08:00。
-    - cron: '0 12 * * *'
+    # UTC 11:00 大约等于加东时间 (EDT) 早上 07:00。
+    - cron: '0 11 * * *'
   workflow_dispatch: # 加上这一行，允许你在 GitHub 页面手动点击运行，方便测试
 
 jobs:

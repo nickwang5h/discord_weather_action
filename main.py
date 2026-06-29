@@ -2,17 +2,23 @@ import os
 import requests
 
 def get_weather(city="Ottawa"):
-    # 使用自定义 format 获取包含降水量(%p)等更多信息的天气
-    # %l: 城市名, %c: 天气emoji, %t: 温度, %p: 降水量(mm), %w: 风速和方向, %h: 湿度
-    url = f"https://wttr.in/{city}"
-    params = {
-        "format": "%l: %c %t 💧%p 💨%w 💦%h",
-        "m": ""
-    }
+    url = f"https://wttr.in/{city}?format=j1"
     try:
-        response = requests.get(url, params=params, timeout=10)
+        response = requests.get(url, timeout=10)
         response.raise_for_status()
-        return response.text.strip()
+        data = response.json()
+        today = data['weather'][0]
+        hourly = today['hourly']
+        
+        # 统计今天的总降水量和最大降水概率
+        precip = sum(float(h.get('precipMM', 0)) for h in hourly)
+        chance_of_rain = max(int(h.get('chanceofrain', 0)) for h in hourly)
+        conditions = hourly[4]['weatherDesc'][0]['value'] # 选取中午的天气情况作为代表
+        
+        return (f"**📍 {city}**\n"
+                f"🌡️ 气温: {today['mintempC']}°C ~ {today['maxtempC']}°C\n"
+                f"☀️ 天气: {conditions}\n"
+                f"💧 降水: {chance_of_rain}% ({precip:.1f}mm)")
     except Exception as e:
         return f"获取 {city} 天气失败: {e}"
 
@@ -24,7 +30,7 @@ def push_to_discord(weather_text):
         return
 
     data = {
-        "content": f"🌤️ **早安！今日天气播报：**\n> {weather_text}"
+        "content": f"🌤️ **早安！今日天气播报：**\n\n{weather_text}"
     }
     
     response = requests.post(webhook_url, json=data)
@@ -36,4 +42,4 @@ def push_to_discord(weather_text):
 if __name__ == "__main__":
     weather_ottawa = get_weather("Ottawa")
     weather_sudbury = get_weather("Sudbury")
-    push_to_discord(f"{weather_ottawa}\n> {weather_sudbury}")
+    push_to_discord(f"{weather_ottawa}\n\n{weather_sudbury}")
