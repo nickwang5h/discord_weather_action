@@ -8,26 +8,50 @@ def get_weather_data(city):
         response.raise_for_status()
         data = response.json()
         
-        current = data['current_condition'][0]
         today = data['weather'][0]
         tomorrow = data['weather'][1]
         hourly = today['hourly']
         
         precip = sum(float(h.get('precipMM', 0)) for h in hourly)
-        chance_of_rain = max(int(h.get('chanceofrain', 0)) for h in hourly)
-        conditions = hourly[4]['weatherDesc'][0]['value']
         
-        feels_like = current['FeelsLikeC']
+        # 辅助函数：找出降水（雨或雪）概率最大的一段
+        def get_max_precip(hourly_data):
+            def max_chance(h):
+                return max(int(h.get('chanceofrain', 0)), int(h.get('chanceofsnow', 0)))
+            max_hour = max(hourly_data, key=max_chance)
+            return max_chance(max_hour), max_hour
+
+        # 今天的降水概率与天气状况
+        chance_of_precip, max_precip_hour = get_max_precip(hourly)
+        if chance_of_precip >= 30:
+            conditions = max_precip_hour['weatherDesc'][0]['value']
+        else:
+            conditions = hourly[4]['weatherDesc'][0]['value'] # 默认中午
+            
+        # 明天的降水概率与天气状况
+        tomorrow_chance, tomorrow_max_hour = get_max_precip(tomorrow['hourly'])
+        if tomorrow_chance >= 30:
+            tomorrow_cond = tomorrow_max_hour['weatherDesc'][0]['value']
+        else:
+            tomorrow_cond = tomorrow['hourly'][4]['weatherDesc'][0]['value']
+
+        # 获取全天最高体感温度，而不是脚本执行当时的体感温度
+        feels_like = max(int(h['FeelsLikeC']) for h in hourly)
         uv_index = int(today.get('uvIndex', 0))
         
-        tomorrow_cond = tomorrow['hourly'][4]['weatherDesc'][0]['value']
         tomorrow_min = tomorrow['mintempC']
         tomorrow_max = tomorrow['maxtempC']
         
         # 智能提示
         tips = []
-        if chance_of_rain > 50 or precip > 2.0:
-            tips.append("☔ 提醒：今天大概率会下雨，出门别忘了带伞哦！")
+        if chance_of_precip > 50 or precip > 2.0:
+            if int(max_precip_hour.get('chanceofsnow', 0)) > 50:
+                tips.append("❄️ 提醒：今天大概率会下雪，出门注意防寒防滑！")
+            else:
+                tips.append("☔ 提醒：今天大概率会下雨，出门别忘了带伞哦！")
+        
+        if int(today['maxtempC']) >= 30 or feels_like >= 35:
+            tips.append("🔥 提醒：天气炎热，注意防暑降温！")
         if uv_index > 5:
             tips.append("🕶️ 提醒：今天紫外线较强，注意防晒！")
         if int(today['mintempC']) < 5 or (int(today['maxtempC']) - int(today['mintempC']) > 15):
@@ -35,10 +59,13 @@ def get_weather_data(city):
             
         tip_text = "\n".join(tips) if tips else "🌤️ 今天气温适宜，是不错的一天！"
 
-        # 判断颜色 (比如下雨蓝色，晴天橙色，多云灰色)
+        # 判断颜色 (比如下雨蓝色，晴天橙色，多云灰色，下雪白色)
         color = 0xFFA500 # 默认橙色 (晴天)
-        if chance_of_rain > 50 or precip > 1.0:
-            color = 0x3498DB # 蓝色
+        if chance_of_precip > 50 or precip > 1.0:
+            if "snow" in conditions.lower() or int(max_precip_hour.get('chanceofsnow', 0)) > 50:
+                color = 0xECF0F1 # 白色/浅蓝
+            else:
+                color = 0x3498DB # 蓝色
         elif "cloud" in conditions.lower() or "overcast" in conditions.lower():
             color = 0x95A5A6 # 灰色
 
@@ -46,9 +73,9 @@ def get_weather_data(city):
             "title": f"📍 {city} 今日天气",
             "color": color,
             "fields": [
-                {"name": "🌡️ 气温与体感", "value": f"{today['mintempC']}°C ~ {today['maxtempC']}°C (体感 {feels_like}°C)", "inline": True},
+                {"name": "🌡️ 气温与体感", "value": f"{today['mintempC']}°C ~ {today['maxtempC']}°C (最高体感 {feels_like}°C)", "inline": True},
                 {"name": "☀️ 天气状况", "value": f"{conditions} (UV指数: {uv_index})", "inline": True},
-                {"name": "💧 降水概率", "value": f"{chance_of_rain}% (约 {precip:.1f}mm)", "inline": True},
+                {"name": "💧 降水概率", "value": f"{chance_of_precip}% (约 {precip:.1f}mm)", "inline": True},
                 {"name": "🔮 明日预报", "value": f"{tomorrow_cond}, {tomorrow_min}°C ~ {tomorrow_max}°C", "inline": False},
                 {"name": "💡 出行建议", "value": tip_text, "inline": False}
             ]
