@@ -1,20 +1,19 @@
-import requests
+import os
 import json
+import main
 
-r = requests.get("https://wttr.in/Ottawa?format=j1")
-data = r.json()
+# Test Chinese
+os.environ["LANGUAGE"] = "zh"
+main.LANGUAGE = "zh"
+print("=== 中文输出 (zh) ===")
+zh_data = main.get_weather_data("Ottawa")
+print(json.dumps(zh_data, indent=2, ensure_ascii=False))
 
-today = data['weather'][0]
-hourly = today['hourly']
+print("\n")
 
-max_rain_hour = max(hourly, key=lambda h: int(h.get('chanceofrain', 0)))
-chance_of_rain = int(max_rain_hour.get('chanceofrain', 0))
-
-if chance_of_rain >= 30:
-    conditions = max_rain_hour['weatherDesc'][0]['value']
-else:
-    conditions = hourly[4]['weatherDesc'][0]['value']
-
-print("Condition:", conditions, "Chance:", chance_of_rain)
-
-
+# Test English
+os.environ["LANGUAGE"] = "en"
+main.LANGUAGE = "en"
+print("=== 英文输出 (en) ===")
+en_data = main.get_weather_data("Ottawa")
+print(json.dumps(en_data, indent=2, ensure_ascii=False))

@@ -1,3 +1,5 @@
+[English](README_EN.md) | 中文
+
 # Discord Daily Weather Bot 🌤️
 
 这是一个简单的 Python 脚本，每天定时从 [wttr.in](https://wttr.in) 获取指定城市的天气预报，并通过 Webhook 推送到 Discord 频道中。项目内置了 GitHub Actions 工作流配置，你可以利用 GitHub 免费提供的服务器资源实现每天自动推送，无需自己购买服务器。
