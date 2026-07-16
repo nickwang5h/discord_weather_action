@@ -60,32 +60,69 @@ def get_weather_data(city):
         tomorrow_min = tomorrow['mintempC']
         tomorrow_max = tomorrow['maxtempC']
         
+        # Check for severe weather alerts from hourly descriptions
+        alert_tips = []
+        is_severe = False
+        all_conds_str = " ".join([h['weatherDesc'][0]['value'].lower() for h in hourly])
+        
+        if "smoke" in all_conds_str or "haze" in all_conds_str or "wildfire" in all_conds_str:
+            alert_tips.append(get_text(LANGUAGE, "alert_smoke"))
+            is_severe = True
+        if "freezing" in all_conds_str or "ice" in all_conds_str:
+            alert_tips.append(get_text(LANGUAGE, "alert_freezing_rain"))
+            is_severe = True
+        if "storm" in all_conds_str or "thunder" in all_conds_str or "torrential" in all_conds_str:
+            alert_tips.append(get_text(LANGUAGE, "alert_storm"))
+            is_severe = True
+        if "blizzard" in all_conds_str or "heavy snow" in all_conds_str:
+            alert_tips.append(get_text(LANGUAGE, "alert_blizzard"))
+            is_severe = True
+
         # Intelligent tips
         tips = []
+        is_caution = False
         if chance_of_precip > 50 or precip > 2.0:
+            is_caution = True
             if int(max_precip_hour.get('chanceofsnow', 0)) > 50:
                 tips.append(get_text(LANGUAGE, "snow_tip"))
             else:
                 tips.append(get_text(LANGUAGE, "rain_tip"))
         
         if int(today['maxtempC']) >= 30 or feels_like >= 35:
+            is_caution = True
             tips.append(get_text(LANGUAGE, "hot_tip"))
         if uv_index > 5:
+            is_caution = True
             tips.append(get_text(LANGUAGE, "uv_tip"))
         if int(today['mintempC']) < 5 or (int(today['maxtempC']) - int(today['mintempC']) > 15):
+            is_caution = True
             tips.append(get_text(LANGUAGE, "cold_tip"))
             
-        tip_text = "\n".join(tips) if tips else get_text(LANGUAGE, "nice_tip")
+        all_tips = alert_tips + tips
+        tip_text = "\n".join(all_tips) if all_tips else get_text(LANGUAGE, "nice_tip")
 
-        # Determine color (e.g., blue for rain, orange for sunny, gray for cloudy, white for snow)
-        color = 0xFFA500 # Default orange (sunny)
-        if chance_of_precip > 50 or precip > 1.0:
-            if "snow" in conditions_en.lower() or int(max_precip_hour.get('chanceofsnow', 0)) > 50:
-                color = 0xECF0F1 # White/light blue
+        # Determine color
+        COLOR_SEVERE = 0xE74C3C # Red
+        COLOR_CAUTION = 0xF1C40F # Yellow
+        COLOR_NICE = 0x2ECC71 # Green
+        COLOR_RAIN = 0x3498DB # Blue
+        COLOR_SNOW = 0xECF0F1 # White
+        COLOR_CLOUDY = 0x95A5A6 # Gray
+
+        if is_severe:
+            color = COLOR_SEVERE
+        elif is_caution:
+            if chance_of_precip > 50 or precip > 1.0:
+                if "snow" in conditions_en.lower() or int(max_precip_hour.get('chanceofsnow', 0)) > 50:
+                    color = COLOR_SNOW
+                else:
+                    color = COLOR_RAIN
             else:
-                color = 0x3498DB # Blue
+                color = COLOR_CAUTION # Heat, cold, high UV
         elif "cloud" in conditions_en.lower() or "overcast" in conditions_en.lower():
-            color = 0x95A5A6 # Gray
+            color = COLOR_CLOUDY
+        else:
+            color = COLOR_NICE
 
         embed = {
             "title": get_text(LANGUAGE, "weather_today", city=city),

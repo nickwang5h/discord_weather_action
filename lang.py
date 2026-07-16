@@ -20,7 +20,11 @@ I18N = {
         "env_error": "Error: DISCORD_WEBHOOK_URL environment variable not found",
         "morning_greet": "🌤️ **Good morning! Here is today's weather forecast:**",
         "push_success": "Pushed successfully!",
-        "push_failed": "Push failed, status code: {code}"
+        "push_failed": "Push failed, status code: {code}",
+        "alert_smoke": "⚠️ ALERT: Smoke/Wildfire detected. Air quality may be poor!",
+        "alert_freezing_rain": "⚠️ ALERT: Freezing rain. Roads will be extremely slippery!",
+        "alert_storm": "⚠️ ALERT: Severe storm/thunderstorm approaching.",
+        "alert_blizzard": "⚠️ ALERT: Blizzard/Heavy snow conditions."
     },
     "zh": {
         "snow_tip": "❄️ 提醒：今天大概率会下雪，出门注意防寒防滑！",
@@ -43,7 +47,11 @@ I18N = {
         "env_error": "错误：未找到 DISCORD_WEBHOOK_URL 环境变量",
         "morning_greet": "🌤️ **早安！今日天气播报：**",
         "push_success": "推送成功！",
-        "push_failed": "推送失败，状态码: {code}"
+        "push_failed": "推送失败，状态码: {code}",
+        "alert_smoke": "⚠️ 警报：检测到烟尘/山火！空气质量可能很差，请注意防范！",
+        "alert_freezing_rain": "⚠️ 警报：冻雨天气！道路将极度结冰湿滑，请小心出行！",
+        "alert_storm": "⚠️ 警报：暴风雨/雷暴天气即将来临，请注意安全！",
+        "alert_blizzard": "⚠️ 警报：暴风雪/大雪天气，视线不佳且路面积雪，请尽量减少外出！"
     }
 }
 
