@@ -62,3 +62,38 @@ def get_text(lang, key, **kwargs):
     if kwargs:
         return text.format(**kwargs)
     return text
+
+WMO_CODES = {
+    "en": {
+        0: "Clear sky",
+        1: "Mainly clear", 2: "Partly cloudy", 3: "Overcast",
+        45: "Fog", 48: "Depositing rime fog",
+        51: "Light drizzle", 53: "Moderate drizzle", 55: "Dense drizzle",
+        56: "Light freezing drizzle", 57: "Dense freezing drizzle",
+        61: "Slight rain", 63: "Moderate rain", 65: "Heavy rain",
+        66: "Light freezing rain", 67: "Heavy freezing rain",
+        71: "Slight snow fall", 73: "Moderate snow fall", 75: "Heavy snow fall",
+        77: "Snow grains",
+        80: "Slight rain showers", 81: "Moderate rain showers", 82: "Violent rain showers",
+        85: "Slight snow showers", 86: "Heavy snow showers",
+        95: "Thunderstorm", 96: "Thunderstorm with slight hail", 99: "Thunderstorm with heavy hail"
+    },
+    "zh": {
+        0: "晴朗",
+        1: "大部晴朗", 2: "局部多云", 3: "阴天",
+        45: "有雾", 48: "雾凇",
+        51: "小毛毛雨", 53: "中毛毛雨", 55: "大毛毛雨",
+        56: "小冻毛毛雨", 57: "大冻毛毛雨",
+        61: "小雨", 63: "中雨", 65: "大雨",
+        66: "小冻雨", 67: "大冻雨",
+        71: "小雪", 73: "中雪", 75: "大雪",
+        77: "米雪",
+        80: "小阵雨", 81: "中阵雨", 82: "强阵雨",
+        85: "小阵雪", 86: "大阵雪",
+        95: "雷暴", 96: "雷暴伴有小冰雹", 99: "雷暴伴有大冰雹"
+    }
+}
+
+def get_wmo_text(lang, code):
+    lang_dict = WMO_CODES.get(lang, WMO_CODES['en'])
+    return lang_dict.get(code, WMO_CODES['en'].get(code, 'Unknown'))
