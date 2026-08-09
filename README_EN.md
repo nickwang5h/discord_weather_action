@@ -63,10 +63,10 @@ Since you just Forked the repository, GitHub might disable Actions by default:
 If you want to modify and debug the code locally:
 
 1. Clone the repository to your local machine.
-2. Install dependencies: `pip install -r requirements.txt`
+2. Sync dependencies with `uv sync` (`requirements.txt` remains for the existing CI/pip workflow).
 3. Set the environment variable `DISCORD_WEBHOOK_URL` to your Webhook address.
 4. (Optional) Set the environment variable `CITIES` (e.g., `export CITIES="Beijing,Shanghai"`).
-5. Run the script: `python main.py`
+5. Run the script: `uv run python main.py`
 
 ## Dependencies 📦
 

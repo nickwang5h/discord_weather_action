@@ -63,10 +63,10 @@
 如果你想在本地修改代码和调试：
 
 1. 克隆仓库到本地。
-2. 安装依赖：`pip install -r requirements.txt`
+2. 同步依赖：`uv sync`（`requirements.txt` 保留供现有 CI/pip 流程使用）。
 3. 设置环境变量 `DISCORD_WEBHOOK_URL` 为你的 Webhook 地址。
 4. (可选) 设置环境变量 `CITIES`（例如 `export CITIES="Beijing,Shanghai"`）。
-5. 运行脚本：`python main.py`
+5. 运行脚本：`uv run python main.py`
 
 ## 依赖声明 📦
 

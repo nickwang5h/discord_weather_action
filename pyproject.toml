@@ -1,0 +1,11 @@
+[project]
+name = "discord-weather-action"
+version = "0.1.0"
+description = "Daily weather forecast delivery to Discord webhooks."
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.33.1,<2.33.2",
+]
+
+[tool.uv]
+package = false
