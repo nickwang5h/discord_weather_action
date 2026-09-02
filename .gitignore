@@ -12,3 +12,7 @@ venv.bak/
 .idea/
 .vscode/
 *.log
+.pi/
+scratch/
+*.tmp
+*.staging

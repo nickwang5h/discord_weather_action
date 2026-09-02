@@ -1,6 +1,12 @@
 [English](README_EN.md) | 中文
 
-# Discord Daily Weather Bot 🌤️
+> [!WARNING]
+> **本项目已归档 (Archived)**
+> 每日天气播报功能已于 2026-09-02 正式迁移至常驻 VPS 运行的 [`discord-bot`](https://github.com/nickwang5h/discord-bot) 智能机器人服务中。
+> **迁移原因**：GitHub Actions 免费共享 Runner 存在严重的跨时区排队延迟（经常延误 4~10 小时至下午才执行），无法保证早晨准时获取天气。新方案在自建 VPS 上以毫秒级准时调度执行，并增加了 Open-Meteo 备用双通道、加拿大极端气象分级预警、中文地名别名解析及交互式查询命令。
+> 这里的代码仅作为历史归档参考，定时工作流已停用。
+
+# Discord Daily Weather Bot 🌤️ (Archived)
 
 这是一个简单的 Python 脚本，每天定时从 [wttr.in](https://wttr.in) 获取指定城市的天气预报，并通过 Webhook 推送到 Discord 频道中。项目内置了 GitHub Actions 工作流配置，你可以利用 GitHub 免费提供的服务器资源实现每天自动推送，无需自己购买服务器。
 

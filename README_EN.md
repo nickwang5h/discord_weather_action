@@ -1,6 +1,12 @@
 [中文](README.md) | English
 
-# Discord Daily Weather Bot 🌤️
+> [!WARNING]
+> **This project is Archived**
+> Daily weather forecasting was migrated on 2026-09-02 to the persistent VPS-hosted [`discord-bot`](https://github.com/nickwang5h/discord-bot) service.
+> **Reason for migration**: GitHub Actions free shared runners experience severe scheduling queuing delays (often delayed by 4-10 hours until late afternoon), making timely morning delivery unreliable. The new solution runs on a persistent VPS with second-level punctuality, Open-Meteo dual-channel fallback, Canadian tiered severe weather alerts, Chinese city alias resolution, and interactive slash commands.
+> This repository is kept for historical reference only; automated scheduled workflows have been retired.
+
+# Discord Daily Weather Bot 🌤️ (Archived)
 
 This is a simple Python script that fetches the daily weather forecast for specified cities from [wttr.in](https://wttr.in) and pushes it to a Discord channel via Webhook. The project includes a built-in GitHub Actions workflow configuration, allowing you to use GitHub's free server resources for automatic daily pushes without needing to purchase your own server.
 
